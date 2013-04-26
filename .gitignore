@@ -1,0 +1,5 @@
+*.o
+demo
+*.a
+*.so
+*.tar.gz

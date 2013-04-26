@@ -1,0 +1,27 @@
+This is a collection of small graphical demos, and a library
+to display them using openGL.
+
+Installation:
+-------------
+- Edit `config.mk`
+- `make`
+- `make install`
+
+Requirements
+------------
+- A C compiler and linker (gcc, tcc, pcc)
+- A unix system
+- SDL 2, and openGL
+
+Parameters
+----------
+`CC`        : C compiler command (`gcc`)
+`LD`        : Linker command (`$CC`)
+`CFLAGS`    : C compiler options (`-Wall -Werror`)
+`LDFLAGS`   : Linker options (`-static`)
+`PREFIX`    : Prefix for installation files (`/usr/local`)
+`MANPREFIX` : Location of manpage directory (`$PREFIX/man`)
+'GFXLIB'    : Backend graphics library (`SDL2`)
+
+The author recommends the use of static linking and
+a small libc, such as musl, dietlibc, or uclibc.
