@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 	char s[10];
 	Aqwin *w;
 	
-	if ((w = aqwin_open("title=testwin geom=640x480")) == NULL) {
+	if ((w = aqwin_open("title='Demo window' geom=640x480")) == NULL) {
 		exit(1);
 	}
 	puts("Created window");

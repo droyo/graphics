@@ -31,6 +31,7 @@ struct aqwin_param {
 
 static int isws(char);
 static void eatwhite(char **);
+static int charff(char **s, char c);
 
 static int parse_attr(aqwin_tuple *);
 static aqwin_param *parse_cfg(const char *cfg);
@@ -51,6 +52,10 @@ static int isws(char c) {
 }
 static void eatwhite(char **s) {
 	while(isws(**s)) (*s)++;
+}
+static int charff(char **s, char c) {
+	for(;**s;(*s)++) if (**s == c) return 1;
+	return 0;
 }
 
 void print_params(aqwin_param *p) {
@@ -73,7 +78,7 @@ Aqwin *aqwin_open(const char *cfg) {
 		complain("aqwin_open: invalid config \"%s\"\n", cfg);
 		return NULL;
 	}
-
+	print_params(p);
 	win = aqwin_create(p);
 	aqwin_param_free(p);
 	return win;
@@ -112,6 +117,29 @@ static aqwin_param *parse_cfg(const char *cfg) {
 		else if(*cp == '=') {
 			*cp = '\0';
 			last->val = cp + 1;
+		}
+		else if(*cp == '\'') {
+			*cp++ = '\0';
+			if (last->val) {
+				last->val = cp;
+			} else {
+				complain("aqwin_open: quoted key\n");
+				goto e3_parse_error;
+			}
+			if (charff(&cp, '\'')) {
+				*cp++ = '\0';
+			} else {
+				complain("aqwin_open: unterminated string\n");
+				goto e3_parse_error;
+			}
+			eatwhite(&cp);
+			if((last->next = malloc(sizeof *last)) == NULL) {
+				complain("aqwin_open: nomem next param\n");
+				goto e3_nomem_paramnext;
+			}
+			last = last->next;
+			memset(last, 0, sizeof *last);
+			goto skip_inc;
 		}
 		else if(isws(*cp)) {
 			*cp = '\0';
